@@ -5,5 +5,4 @@ import com.example.domain.entity.Article;
 
 public interface ArticleMapper extends BaseMapper<Article> {
 
-
 }
