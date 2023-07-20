@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constants.SystemConstants;
 import com.example.domain.ResponseResult;
 import com.example.domain.entity.Article;
+import com.example.domain.vo.ArticleDetailVo;
 import com.example.domain.vo.ArticleListVo;
 import com.example.domain.vo.HotArticleVo;
 import com.example.domain.vo.PageVo;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,7 +49,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 查询条件
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         // 如果categoryId不为空，添加categoryId查询条件
-        queryWrapper.eq(Objects.nonNull(categoryId) && categoryId>0, Article::getCategoryId, categoryId);
+        queryWrapper.eq(Objects.nonNull(categoryId) && categoryId > 0, Article::getCategoryId, categoryId);
         // 只能查询正式发布的文章，按置顶文章排序
         queryWrapper.eq(Article::getStatus, SystemConstants.ARTICLE_STATUS_NORMAL);
         queryWrapper.orderByDesc(Article::getIsTop);
@@ -66,5 +66,17 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(articles, ArticleListVo.class);
         PageVo pageVo = new PageVo(articleListVos, page.getTotal());
         return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult<?> getArticleDetail(Long id) {
+        // 根据id查询文章
+        Article article = getById(id);
+        // 转换vo
+        ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
+        // 根据分类id查询分类名
+        articleDetailVo.setCategoryName(categoryService.getById(article.getCategoryId()).getName());
+        // 封装响应返回
+        return ResponseResult.okResult(articleDetailVo);
     }
 }
