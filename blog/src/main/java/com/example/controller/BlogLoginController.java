@@ -1,8 +1,11 @@
 package com.example.controller;
 
+import com.example.Exception.SystemException;
 import com.example.domain.ResponseResult;
 import com.example.domain.entity.User;
+import com.example.enums.AppHttpCodeEnum;
 import com.example.service.BlogLoginService;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +19,9 @@ public class BlogLoginController {
 
     @PostMapping("/login")
     public ResponseResult<?> login(@RequestBody User user) {
+        if (!StringUtils.hasText(user.getUserName())) {
+            throw new SystemException(AppHttpCodeEnum.REQUIRE_USERNAME);
+        }
         return blogLoginService.login(user);
     }
 }
