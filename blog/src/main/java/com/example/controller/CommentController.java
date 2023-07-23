@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.constants.SystemConstants;
 import com.example.domain.ResponseResult;
 import com.example.domain.entity.Comment;
 import com.example.service.CommentService;
@@ -14,8 +15,13 @@ public class CommentController {
     private CommentService commentService;
 
     @GetMapping("/commentList")
-    public ResponseResult<?> commentList(Long articleId,Integer pageNum,Integer pageSize) {
-        return commentService.commentList(articleId,pageNum,pageSize);
+    public ResponseResult<?> commentList(Long articleId, Integer pageNum, Integer pageSize) {
+        return commentService.commentList(SystemConstants.ARTICLE_COMMENT, articleId, pageNum, pageSize);
+    }
+
+    @GetMapping("/linkCommentList")
+    public ResponseResult<?> linkCommentList(Long articleId, Integer pageNum, Integer pageSize) {
+        return commentService.commentList(SystemConstants.LINK_COMMENT, articleId, pageNum, pageSize);
     }
 
     @PostMapping

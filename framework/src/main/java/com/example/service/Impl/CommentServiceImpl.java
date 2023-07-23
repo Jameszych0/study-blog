@@ -33,12 +33,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     UserService userService;
 
     @Override
-    public ResponseResult<?> commentList(Long articleId, Integer pageNum, Integer pageSize) {
+    public ResponseResult<?> commentList(String commentType, Long articleId, Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         // 根据articleId查询文章的评论
-        queryWrapper.eq(Comment::getArticleId, articleId);
+        queryWrapper.eq(SystemConstants.ARTICLE_COMMENT.equals(commentType), Comment::getArticleId, articleId);
         // 根据rootId为1来判断根评论
         queryWrapper.eq(Comment::getRootId, SystemConstants.ROOT_COMMENT);
+        // 判断评论类型
+        queryWrapper.eq(Comment::getType, commentType);
         // 分页查询
         Page<Comment> page = new Page<>(pageNum, pageSize);
         page(page, queryWrapper);
@@ -54,7 +56,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Override
     public ResponseResult<?> addComment(Comment comment) {
         //评论内容不能为空
-        if(!StringUtils.hasText(comment.getContent())){
+        if (!StringUtils.hasText(comment.getContent())) {
             throw new SystemException(AppHttpCodeEnum.CONTENT_NOT_NULL);
         }
         save(comment);

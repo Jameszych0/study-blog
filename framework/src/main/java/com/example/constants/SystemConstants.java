@@ -21,4 +21,7 @@ public class SystemConstants {
      * 该评论是根评论
      */
     public static final String ROOT_COMMENT = "-1";
+    public static final String ARTICLE_COMMENT = "0";
+
+    public static final String LINK_COMMENT = "1";
 }
