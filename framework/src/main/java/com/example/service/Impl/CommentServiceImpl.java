@@ -3,16 +3,19 @@ package com.example.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.Exception.SystemException;
 import com.example.constants.SystemConstants;
 import com.example.domain.ResponseResult;
 import com.example.domain.entity.Comment;
 import com.example.domain.vo.CommentVo;
 import com.example.domain.vo.PageVo;
+import com.example.enums.AppHttpCodeEnum;
 import com.example.mapper.CommentMapper;
 import com.example.service.CommentService;
 import com.example.service.UserService;
 import com.example.uitls.BeanCopyUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -43,13 +46,24 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         List<CommentVo> commentVos = toCommentVoList(page.getRecords());
         // 查询所有根评论对应的子评论集合，并且赋值给对应的属性
         commentVos = commentVos.stream()
-                .peek(commentVo -> commentVo.setChildren(getChildren(commentVo.getId()))).collect(Collectors.toList());
+                .peek(commentVo -> commentVo.setChildren(getChildren(commentVo.getId())))
+                .collect(Collectors.toList());
         return ResponseResult.okResult(new PageVo(commentVos, page.getTotal()));
+    }
+
+    @Override
+    public ResponseResult<?> addComment(Comment comment) {
+        //评论内容不能为空
+        if(!StringUtils.hasText(comment.getContent())){
+            throw new SystemException(AppHttpCodeEnum.CONTENT_NOT_NULL);
+        }
+        save(comment);
+        return ResponseResult.okResult();
     }
 
     private List<CommentVo> getChildren(Long id) {
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getId, id);
+        queryWrapper.eq(Comment::getRootId, id);
         queryWrapper.orderByAsc(Comment::getCreateTime);
         List<Comment> comments = list(queryWrapper);
         return toCommentVoList(comments);
