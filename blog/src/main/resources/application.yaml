@@ -20,3 +20,9 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
+
+oss:
+  accessKey: eBkb4IMVTmi88yrIQ4p4Au9J3Ynk2Dy8DFin9vxV
+  secretKey: Xx60V3C7ovVB2MrlcAc-Ou7hH1kkj_pd5XlXNqCq
+  bucket: james-blog
+  url: http://ry8scssyf.bkt.clouddn.com
