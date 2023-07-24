@@ -49,7 +49,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
 
     @Override
     public ResponseResult<?> logout() {
-        // 获取useId TODO 封装成工具类
+        // 获取useId
         String userId = SecurityUtils.getUserId().toString();
         // 删除redis中的用户信息
         redisCache.deleteObject("bloglogin:"+userId);
