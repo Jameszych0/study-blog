@@ -152,6 +152,9 @@ public class RedisCache
         return redisTemplate.opsForSet().members(key);
     }
 
+    public void incrementCacheMapValue(String key,String hKey,long v){
+        redisTemplate.boundHashOps(key).increment(hKey, v);
+    }
     /**
      * 缓存Map
      *
