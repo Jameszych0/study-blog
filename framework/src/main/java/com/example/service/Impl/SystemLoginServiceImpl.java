@@ -6,6 +6,7 @@ import com.example.domain.entity.User;
 import com.example.service.LoginService;
 import com.example.uitls.JwtUtil;
 import com.example.uitls.RedisCache;
+import com.example.uitls.SecurityUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,5 +43,11 @@ public class SystemLoginServiceImpl implements LoginService {
         Map<String, String> token = new HashMap<>();
         token.put("token", jwt);
         return ResponseResult.okResult(token);
+    }
+
+    @Override
+    public ResponseResult<?> logout() {
+        redisCache.deleteObject("login:" + SecurityUtils.getUserId());
+        return ResponseResult.okResult();
     }
 }

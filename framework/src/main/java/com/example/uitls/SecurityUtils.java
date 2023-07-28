@@ -28,6 +28,6 @@ public class SecurityUtils {
 
     public static Boolean isAdmin() {
         Long id = getUserId();
-        return id != null && 1L == id;
+        return id != null && id.equals(1L);
     }
 }
