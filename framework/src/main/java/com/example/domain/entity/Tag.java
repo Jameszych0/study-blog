@@ -36,7 +36,4 @@ public class Tag  {
     private Integer delFlag;
     //备注
     private String remark;
-
-
-
 }

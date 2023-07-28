@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.domain.ResponseResult;
+import com.example.domain.dto.TagListDto;
 import com.example.service.TagService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,7 @@ public class TagController {
     private TagService tagService;
 
     @GetMapping("/list")
-    public ResponseResult<?> list() {
-        return ResponseResult.okResult(tagService.list());
+    public ResponseResult<?> list(Integer pageNum, Integer pageSize, TagListDto tagListDto){
+        return tagService.pageTagList(pageNum,pageSize,tagListDto);
     }
 }
