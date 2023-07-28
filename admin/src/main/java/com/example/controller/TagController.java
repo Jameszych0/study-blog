@@ -1,13 +1,15 @@
 package com.example.controller;
 
 import com.example.domain.ResponseResult;
+import com.example.domain.dto.TagDto;
+import com.example.domain.entity.Tag;
 import com.example.domain.dto.TagListDto;
 import com.example.service.TagService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.uitls.BeanCopyUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+
 
 @RestController
 @RequestMapping("/content/tag")
@@ -16,7 +18,29 @@ public class TagController {
     private TagService tagService;
 
     @GetMapping("/list")
-    public ResponseResult<?> list(Integer pageNum, Integer pageSize, TagListDto tagListDto){
-        return tagService.pageTagList(pageNum,pageSize,tagListDto);
+    public ResponseResult<?> list(Integer pageNum, Integer pageSize, TagListDto tagListDto) {
+        return tagService.pageTagList(pageNum, pageSize, tagListDto);
+    }
+
+    @PostMapping
+    public ResponseResult<?> addTag(@RequestBody TagDto addTagDto) {
+        return tagService.addTag(addTagDto);
+    }
+
+    @DeleteMapping("/{ids}")
+    public ResponseResult<?> delTag(@PathVariable("ids") String ids) {
+        return tagService.delTag(ids);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseResult<?> selectTagById(@PathVariable("id")Long id) {
+        return tagService.selectTagById(id);
+    }
+
+    @PutMapping
+    public ResponseResult<?> updateTag(@RequestBody TagDto updateTagDto) {
+        Tag tag = BeanCopyUtils.copyBean(updateTagDto, Tag.class);
+        tagService.updateById(tag);
+        return ResponseResult.okResult();
     }
 }
