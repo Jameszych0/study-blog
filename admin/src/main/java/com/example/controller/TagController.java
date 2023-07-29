@@ -22,6 +22,7 @@ public class TagController {
     public ResponseResult<?> list(Integer pageNum, Integer pageSize, TagListDto tagListDto) {
         return tagService.pageTagList(pageNum, pageSize, tagListDto);
     }
+
     @GetMapping("/listAllTag")
     public ResponseResult<?> listAllTag() {
         return tagService.listAllTag();
@@ -38,13 +39,12 @@ public class TagController {
     }
 
     @GetMapping("/{id}")
-    public ResponseResult<?> selectTagById(@PathVariable("id")Long id) {
+    public ResponseResult<?> selectTagById(@PathVariable("id") Long id) {
         return tagService.selectTagById(id);
     }
 
     @PutMapping
     public ResponseResult<?> updateTag(@RequestBody TagDto updateTagDto) {
-        updateTagDto.setId(SecurityUtils.getUserId());
         Tag tag = BeanCopyUtils.copyBean(updateTagDto, Tag.class);
         tagService.updateById(tag);
         return ResponseResult.okResult();

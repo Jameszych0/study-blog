@@ -1,5 +1,6 @@
 package com.example.job;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.domain.entity.Article;
 import com.example.service.ArticleService;
 import com.example.uitls.RedisCache;
@@ -27,6 +28,13 @@ public class UpdateViewCountJob {
                 .map(entry -> new Article(Long.valueOf(entry.getKey()), entry.getValue().longValue()))
                 .collect(Collectors.toList());
         //更新到数据库中
-        articleService.updateBatchById(articles);
+        articles.forEach(
+                e -> {
+                    UpdateWrapper<Article> updateWrapper = new UpdateWrapper<>();
+                    updateWrapper.eq("id", e.getId());
+                    updateWrapper.set("view_count", e.getViewCount());
+                    articleService.update(updateWrapper);
+                }
+        );
     }
 }

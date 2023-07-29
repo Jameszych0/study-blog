@@ -5,28 +5,33 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constants.SystemConstants;
 import com.example.domain.ResponseResult;
+import com.example.domain.dto.AddArticleDto;
 import com.example.domain.entity.Article;
+import com.example.domain.entity.ArticleTag;
 import com.example.domain.vo.ArticleDetailVo;
 import com.example.domain.vo.ArticleListVo;
 import com.example.domain.vo.HotArticleVo;
 import com.example.domain.vo.PageVo;
 import com.example.mapper.ArticleMapper;
 import com.example.service.ArticleService;
+import com.example.service.ArticleTagService;
 import com.example.service.CategoryService;
 import com.example.uitls.BeanCopyUtils;
 import com.example.uitls.RedisCache;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
     @Resource
     CategoryService categoryService;
+    @Resource
+    ArticleTagService articleTagService;
     @Resource
     RedisCache redisCache;
 
@@ -103,4 +108,18 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         redisCache.incrementCacheMapValue("article:viewCount",id.toString(),1);
         return ResponseResult.okResult();
 }
+
+    @Override
+    @Transactional
+    public ResponseResult<?> addArticle(AddArticleDto addArticleDto) {
+        // 添加文章
+        Article article = BeanCopyUtils.copyBean(addArticleDto, Article.class);
+        save(article);
+        // 添加文章与标签关联
+        List<ArticleTag> collect = addArticleDto.getTags().stream()
+                .map(aLong -> new ArticleTag(article.getId(), aLong))
+                .collect(Collectors.toList());
+        articleTagService.saveBatch(collect);
+        return ResponseResult.okResult();
+    }
 }

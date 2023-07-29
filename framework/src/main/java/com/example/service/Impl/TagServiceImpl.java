@@ -12,7 +12,6 @@ import com.example.domain.vo.TagVo;
 import com.example.mapper.TagMapper;
 import com.example.service.TagService;
 import com.example.uitls.BeanCopyUtils;
-import com.example.uitls.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -51,7 +50,6 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
     @Override
     public ResponseResult<?> addTag(TagDto addTagDto) {
         Tag tag = new Tag();
-        tag.setCreateBy(SecurityUtils.getUserId());
         tag.setName(addTagDto.getName());
         tag.setRemark(addTagDto.getRemark());
         save(tag);
