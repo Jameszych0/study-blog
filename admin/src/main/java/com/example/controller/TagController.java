@@ -6,6 +6,7 @@ import com.example.domain.entity.Tag;
 import com.example.domain.dto.TagListDto;
 import com.example.service.TagService;
 import com.example.uitls.BeanCopyUtils;
+import com.example.uitls.SecurityUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,6 +21,10 @@ public class TagController {
     @GetMapping("/list")
     public ResponseResult<?> list(Integer pageNum, Integer pageSize, TagListDto tagListDto) {
         return tagService.pageTagList(pageNum, pageSize, tagListDto);
+    }
+    @GetMapping("/listAllTag")
+    public ResponseResult<?> listAllTag() {
+        return tagService.listAllTag();
     }
 
     @PostMapping
@@ -39,6 +44,7 @@ public class TagController {
 
     @PutMapping
     public ResponseResult<?> updateTag(@RequestBody TagDto updateTagDto) {
+        updateTagDto.setId(SecurityUtils.getUserId());
         Tag tag = BeanCopyUtils.copyBean(updateTagDto, Tag.class);
         tagService.updateById(tag);
         return ResponseResult.okResult();
