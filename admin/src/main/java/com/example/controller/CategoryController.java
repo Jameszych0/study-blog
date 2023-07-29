@@ -9,6 +9,7 @@ import com.example.enums.AppHttpCodeEnum;
 import com.example.service.CategoryService;
 import com.example.uitls.BeanCopyUtils;
 import com.example.uitls.WebUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -31,6 +31,7 @@ public class CategoryController {
     }
 
     @GetMapping("/export")
+    @PreAuthorize("@ps.hasPermission('content:category:export')")
     public void export(HttpServletResponse response) {
         try {
             // 设置下载文件的请求头
