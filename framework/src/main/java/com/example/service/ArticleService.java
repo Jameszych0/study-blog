@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.domain.ResponseResult;
 import com.example.domain.dto.AddArticleDto;
 import com.example.domain.dto.ContentArticleListDto;
+import com.example.domain.dto.UpdateArticleDto;
 import com.example.domain.entity.Article;
 
 public interface ArticleService extends IService<Article> {
@@ -18,4 +19,10 @@ public interface ArticleService extends IService<Article> {
     ResponseResult<?> addArticle(AddArticleDto addArticleDto);
 
     ResponseResult<?> contentArticleList(Integer pageNum, Integer pageSize, ContentArticleListDto contentArticleListDto);
+
+    ResponseResult<?> showArticle(Long id);
+
+    ResponseResult<?> updateArticle(UpdateArticleDto updateArticleDto);
+
+    ResponseResult<?> delArticle(String ids);
 }

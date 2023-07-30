@@ -7,6 +7,7 @@ import com.example.constants.SystemConstants;
 import com.example.domain.ResponseResult;
 import com.example.domain.dto.AddArticleDto;
 import com.example.domain.dto.ContentArticleListDto;
+import com.example.domain.dto.UpdateArticleDto;
 import com.example.domain.entity.Article;
 import com.example.domain.entity.ArticleTag;
 import com.example.domain.vo.*;
@@ -21,8 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -139,5 +142,48 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 BeanCopyUtils.copyBeanList(page.getRecords(), ContentArticleListVo.class);
         PageVo pageVo = new PageVo(contentArticleListVos, page.getTotal());
         return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult<?> showArticle(Long id) {
+        ShowArticleVo showArticleVo = BeanCopyUtils.copyBean(getById(id), ShowArticleVo.class);
+        LambdaQueryWrapper<ArticleTag> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ArticleTag::getArticleId, id);
+        List<Long> tags = articleTagService.list(queryWrapper).stream()
+                .map(ArticleTag::getTagId)
+                .collect(Collectors.toList());
+        showArticleVo.setTags(tags);
+        return ResponseResult.okResult(showArticleVo);
+    }
+
+    @Override
+    @Transactional
+    public ResponseResult<?> updateArticle(UpdateArticleDto updateArticleDto) {
+        // 添加文章
+        Article article = BeanCopyUtils.copyBean(updateArticleDto, Article.class);
+        updateById(article);
+        // 添加文章与标签关联
+        List<ArticleTag> collect = updateArticleDto.getTags().stream()
+                .map(aLong -> new ArticleTag(article.getId(), aLong))
+                .collect(Collectors.toList());
+        LambdaQueryWrapper<ArticleTag> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ArticleTag::getArticleId, article.getId());
+        articleTagService.remove(queryWrapper);
+        articleTagService.saveBatch(collect);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    @Transactional
+    public ResponseResult<?> delArticle(String ids) {
+        String[] idArray = ids.split(",");
+        List<Long> collect = Arrays.stream(idArray)
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+        LambdaQueryWrapper<ArticleTag> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(ArticleTag::getArticleId, collect);
+        articleTagService.remove(queryWrapper);
+        removeBatchByIds(collect);
+        return ResponseResult.okResult();
     }
 }

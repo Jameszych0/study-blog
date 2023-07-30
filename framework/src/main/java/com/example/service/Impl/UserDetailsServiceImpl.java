@@ -32,7 +32,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (Objects.isNull(user))
             throw new RuntimeException("用户不存在");
         // 返回用户信息
-        // TODO 查询权限信息封装
         if (user.getType().equals(SystemConstants.ADMIN)) {
             List<String> permissions = menuMapper.selectPermsByUserId(user.getId());
             return new LoginUser(user, permissions);
