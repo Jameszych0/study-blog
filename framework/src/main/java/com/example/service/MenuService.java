@@ -1,6 +1,8 @@
 package com.example.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.domain.ResponseResult;
+import com.example.domain.dto.MenuListDto;
 import com.example.domain.entity.Menu;
 
 import java.util.List;
@@ -17,4 +19,8 @@ public interface MenuService extends IService<Menu> {
     List<String> selectPermsByUserId(Long userId);
 
     List<Menu> selectRouterMenuTreeByUserId(Long userId);
+
+    ResponseResult<?> menuList(MenuListDto menuListDto);
+
+    boolean hasChild(Long id);
 }
