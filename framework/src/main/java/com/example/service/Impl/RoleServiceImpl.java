@@ -7,6 +7,7 @@ import com.example.domain.ResponseResult;
 import com.example.domain.dto.AddRoleDto;
 import com.example.domain.dto.ChangeStatusDto;
 import com.example.domain.dto.ShowRoleListDto;
+import com.example.domain.dto.UpdateRoleDto;
 import com.example.domain.entity.Role;
 import com.example.domain.entity.RoleMenu;
 import com.example.domain.vo.PageVo;
@@ -23,6 +24,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
     @Resource
     RoleMenuService roleMenuService;
+
     @Override
     public List<String> selectRoleKeyByUserId(Long userId) {
         // 判断是否是管理员 如果是返回集合中只需要有admin
@@ -80,7 +83,42 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         List<RoleMenu> roleMenus = addRoleDto.getMenuIds().stream()
                 .map(aLong -> new RoleMenu(role.getId(), aLong))
                 .collect(Collectors.toList());
-       roleMenuService.saveBatch(roleMenus);
+        roleMenuService.saveBatch(roleMenus);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult<?> getInfo(Long id) {
+        RoleVo roleVo = BeanCopyUtils.copyBean(getById(id), RoleVo.class);
+        return ResponseResult.okResult(roleVo);
+    }
+
+    @Override
+    @Transactional
+    public ResponseResult<?> updateRole(UpdateRoleDto updateRoleDto) {
+        Role role = BeanCopyUtils.copyBean(updateRoleDto, Role.class);
+        updateById(role);
+
+        LambdaQueryWrapper<RoleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(RoleMenu::getRoleId, updateRoleDto.getId());
+        roleMenuService.remove(queryWrapper);
+
+        List<RoleMenu> collect = updateRoleDto.getMenuIds().stream()
+                .map(aLong -> new RoleMenu(updateRoleDto.getId(), aLong))
+                .collect(Collectors.toList());
+        roleMenuService.saveBatch(collect);
+
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    @Transactional
+    public ResponseResult<?> delRole(Long id) {
+        removeById(id);
+
+        LambdaQueryWrapper<RoleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(RoleMenu::getRoleId, id);
+        roleMenuService.remove(queryWrapper);
         return ResponseResult.okResult();
     }
 }

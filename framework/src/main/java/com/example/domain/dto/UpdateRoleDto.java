@@ -1,13 +1,16 @@
-package com.example.domain.vo;
+package com.example.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleVo {
+public class UpdateRoleDto {
     private Long id;
     //角色名称
     private String roleName;
@@ -19,4 +22,5 @@ public class RoleVo {
     private String status;
     //备注
     private String remark;
+    private List<Long> menuIds;
 }

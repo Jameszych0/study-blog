@@ -4,6 +4,7 @@ import com.example.domain.ResponseResult;
 import com.example.domain.dto.AddRoleDto;
 import com.example.domain.dto.ChangeStatusDto;
 import com.example.domain.dto.ShowRoleListDto;
+import com.example.domain.dto.UpdateRoleDto;
 import com.example.service.RoleService;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,5 +29,20 @@ public class RoleController {
     @PostMapping
     public ResponseResult<?> addRole(@RequestBody AddRoleDto addRoleDto) {
         return roleService.addRole(addRoleDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseResult<?> getInfo(@PathVariable("id") Long id) {
+        return roleService.getInfo(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseResult<?> delRole(@PathVariable("id") Long id) {
+        return roleService.delRole(id);
+    }
+
+    @PutMapping
+    public ResponseResult<?> updateRole(@RequestBody UpdateRoleDto updateRoleDto) {
+        return roleService.updateRole(updateRoleDto);
     }
 }
