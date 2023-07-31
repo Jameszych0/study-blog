@@ -11,6 +11,7 @@ import com.example.mapper.MenuMapper;
 import com.example.service.MenuService;
 import com.example.uitls.BeanCopyUtils;
 import com.example.uitls.SecurityUtils;
+import com.example.uitls.SystemConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -58,8 +59,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     public ResponseResult<?> menuList(MenuListDto menuListDto) {
         LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByAsc(Menu::getOrderNum, Menu::getId);
-        queryWrapper.like(StringUtils.hasText(menuListDto.getMenuName()) ,Menu::getMenuName ,menuListDto.getMenuName());
-        queryWrapper.eq(StringUtils.hasText(menuListDto.getStatus()) ,Menu::getStatus, menuListDto.getStatus());
+        queryWrapper.like(StringUtils.hasText(menuListDto.getMenuName()), Menu::getMenuName, menuListDto.getMenuName());
+        queryWrapper.eq(StringUtils.hasText(menuListDto.getStatus()), Menu::getStatus, menuListDto.getStatus());
         List<MenuVo> menuVos = BeanCopyUtils.copyBeanList(list(queryWrapper), MenuVo.class);
         return ResponseResult.okResult(menuVos);
     }
@@ -69,6 +70,11 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Menu::getParentId, id);
         return count(queryWrapper) != 0;
+    }
+
+    @Override
+    public ResponseResult<?> treeSelect() {
+        return ResponseResult.okResult(SystemConverter.builderMenuTree(list()));
     }
 
     private List<Menu> builderMenuTree(List<Menu> menus) {

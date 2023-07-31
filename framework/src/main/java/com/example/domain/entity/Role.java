@@ -23,7 +23,6 @@ public class Role {
     //角色ID
     @TableId
     private Long id;
-
     //角色名称
     private String roleName;
     //角色权限字符串
@@ -44,6 +43,4 @@ public class Role {
     private Date updateTime;
     //备注
     private String remark;
-
-
 }

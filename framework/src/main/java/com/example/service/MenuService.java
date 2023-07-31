@@ -23,4 +23,6 @@ public interface MenuService extends IService<Menu> {
     ResponseResult<?> menuList(MenuListDto menuListDto);
 
     boolean hasChild(Long id);
+
+    ResponseResult<?> treeSelect();
 }

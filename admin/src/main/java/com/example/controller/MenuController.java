@@ -7,7 +7,6 @@ import com.example.service.MenuService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RestController
 @RequestMapping("/system/menu")
@@ -46,5 +45,9 @@ public class MenuController {
             return ResponseResult.errorResult(500, "存在子菜单，不允许删除");
         menuService.removeById(id);
         return ResponseResult.okResult();
+    }
+    @GetMapping("/treeselect")
+    public ResponseResult<?>treeSelect() {
+        return menuService.treeSelect();
     }
 }
