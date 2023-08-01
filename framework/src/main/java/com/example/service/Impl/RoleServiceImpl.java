@@ -3,6 +3,7 @@ package com.example.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.constants.SystemConstants;
 import com.example.domain.ResponseResult;
 import com.example.domain.dto.AddRoleDto;
 import com.example.domain.dto.ChangeStatusDto;
@@ -10,6 +11,7 @@ import com.example.domain.dto.ShowRoleListDto;
 import com.example.domain.dto.UpdateRoleDto;
 import com.example.domain.entity.Role;
 import com.example.domain.entity.RoleMenu;
+import com.example.domain.vo.ListAllRoleVo;
 import com.example.domain.vo.PageVo;
 import com.example.domain.vo.RoleVo;
 import com.example.mapper.RoleMapper;
@@ -24,7 +26,6 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -120,5 +121,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         queryWrapper.eq(RoleMenu::getRoleId, id);
         roleMenuService.remove(queryWrapper);
         return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult<?> listAllRole() {
+        LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Role::getStatus, SystemConstants.ROLE_STATUS_NORMAL);
+        List<ListAllRoleVo> listAllRoleVos = BeanCopyUtils.copyBeanList(list(queryWrapper), ListAllRoleVo.class);
+        return ResponseResult.okResult(listAllRoleVos);
     }
 }

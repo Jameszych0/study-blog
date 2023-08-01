@@ -9,6 +9,7 @@ public class SystemConstants {
      * 文章是正常分布状态
      */
     public static final int ARTICLE_STATUS_NORMAL = 0;
+    public static final String ROLE_STATUS_NORMAL = "0";
     /**
      * 分类是正常状态
      */
