@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.domain.ResponseResult;
+import com.example.domain.dto.ShowCategoryListDto;
 import com.example.domain.entity.Category;
 
 
@@ -16,4 +17,6 @@ public interface CategoryService extends IService<Category> {
     ResponseResult<?> getCategoryList();
 
     ResponseResult<?> listAllCategory();
+
+    ResponseResult<?> showCategoryList(Integer pageNum, Integer pageSize, ShowCategoryListDto showCategoryListDto);
 }
