@@ -2,6 +2,8 @@ package com.example.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.domain.ResponseResult;
+import com.example.domain.dto.ChangeLinkStatusDto;
+import com.example.domain.dto.ShowLinkDto;
 import com.example.domain.entity.Link;
 
 
@@ -14,4 +16,8 @@ import com.example.domain.entity.Link;
 public interface LinkService extends IService<Link> {
 
     ResponseResult<?> getAllLink();
+
+    ResponseResult<?> showLinkList(Integer pageNum, Integer pageSize, ShowLinkDto showLinkDto);
+
+    ResponseResult<?> changeStatus(ChangeLinkStatusDto changeLinkStatusDto);
 }

@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,7 +19,7 @@ public class UpdateViewCountJob {
     @Resource
     ArticleService articleService;
 
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void updateViewCount() {
         //获取redis中的浏览
         Map<String, Integer> cacheMap = redisCache.getCacheMap("article:viewCount");
